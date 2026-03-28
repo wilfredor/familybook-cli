@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Familybook</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <main class="main">
+        <header class="app-menubar" aria-label="Main navigation" data-i18n-aria-label="main_navigation">
+          <div class="app-menu-group">
+            <button class="app-menu-button" data-menu="explore" type="button" data-i18n="menu_section_explore">Explore</button>
+            <div class="app-submenu">
+              <button class="secondary menu-nav-button" data-view="explorer" type="button" data-i18n="explorer">Explorer</button>
+              <button class="secondary menu-nav-button" data-view="tree" type="button" data-i18n="tree">Tree</button>
+              <button class="secondary menu-nav-button" data-view="connections" type="button" data-i18n="connections">Connections</button>
+            </div>
+          </div>
+          <div class="app-menu-group">
+            <button class="app-menu-button" data-menu="analysis" type="button" data-i18n="menu_section_analysis">Analysis</button>
+            <div class="app-submenu">
+              <button class="secondary menu-nav-button" data-view="dna" type="button" data-i18n="dna">DNA</button>
+              <button class="secondary menu-nav-button" data-view="historical" type="button" data-i18n="historical_events">Historical Events</button>
+              <button class="secondary menu-nav-button" data-view="dedupe" type="button" data-i18n="dedupe_review">Duplicate Review</button>
+            </div>
+          </div>
+          <div class="app-menu-group">
+            <button class="app-menu-button" data-menu="data" type="button" data-i18n="menu_section_data">Data</button>
+            <div class="app-submenu">
+              <button class="secondary menu-nav-button" data-view="data" type="button" data-i18n="data_center">Data Center</button>
+            </div>
+          </div>
+          <div class="app-menu-group">
+            <button class="app-menu-button" data-menu="publish" type="button" data-i18n="menu_section_publish">Publish</button>
+            <div class="app-submenu">
+              <button class="secondary menu-nav-button" data-view="book" type="button" data-i18n="generate_book">Generate Book</button>
+            </div>
+          </div>
+          <div class="app-menu-group">
+            <button class="app-menu-button" data-menu="system" type="button" data-i18n="menu_section_system">System</button>
+            <div class="app-submenu">
+              <button class="secondary menu-nav-button" data-view="info" type="button" data-i18n="information">Information</button>
+              <button class="secondary menu-nav-button" data-view="settings" type="button" data-i18n="preferences">Preferences</button>
+            </div>
+          </div>
+        </header>
+
+        <section class="hero">
+          <div class="brand-inline">
+            <h1>Familybook</h1>
+            <div class="brand-kicker brand-sub" data-i18n="local_archive">Local Archive</div>
+          </div>
+          <div class="search-wrap">
+            <input id="people-search" type="search" placeholder="Search by name or person ID" data-i18n-placeholder="search_name_or_id">
+          </div>
+        </section>
+
+        <section id="view-explorer" class="app-view">
+          <div class="content-grid">
+            <section class="panel people-panel">
+              <div class="panel-title-row">
+                <h2 data-i18n="people">People</h2>
+                <div id="people-count" class="muted"></div>
+              </div>
+              <div id="people-list" class="people-list"></div>
+              <div class="people-pager">
+                <button id="people-prev-page" class="secondary" type="button" data-i18n="previous">Previous</button>
+                <div id="people-page-info" class="muted"></div>
+                <button id="people-next-page" class="secondary" type="button" data-i18n="next">Next</button>
+              </div>
+            </section>
+
+            <section class="panel detail-panel">
+              <div id="person-detail" class="empty-state">
+                <span data-i18n="select_person_inspect_mirror">Select a person to inspect the local mirror.</span>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section id="view-dna" class="app-view hidden">
+          <section class="panel detail-panel">
+            <div id="dna-view-content" class="empty-state">
+              <span data-i18n="select_person_open_dna">Select a person to open the DNA module.</span>
+            </div>
+          </section>
+        </section>
+
+        <section id="view-tree" class="app-view hidden">
+          <div class="panel tree-controls-panel">
+            <div class="panel-title-row">
+              <h2 data-i18n="tree">Tree</h2>
+            </div>
+            <div class="tree-controls">
+              <div class="inline-control tree-root-control">
+                <span data-i18n="root">Root</span>
+                <input id="tree-root-search" type="search" placeholder="Search person…" autocomplete="off" aria-label="Search root person" data-i18n-placeholder="search_person" data-i18n-aria-label="search_root_person">
+              </div>
+              <label class="inline-control">
+                <span data-i18n="mode">Mode</span>
+                <select id="tree-mode">
+                  <option value="pedigree" data-i18n="pedigree">Pedigree</option>
+                  <option value="family" data-i18n="family">Family</option>
+                  <option value="ancestors" data-i18n="ancestors">Ancestors</option>
+                  <option value="descendants" data-i18n="descendants">Descendants</option>
+                </select>
+              </label>
+              <label class="inline-control">
+                <span data-i18n="depth">Depth</span>
+                <input id="tree-depth" type="number" value="3" min="1" max="8">
+              </label>
+              <div id="tree-root-label" class="muted"></div>
+            </div>
+          </div>
+          <div id="tree-view" class="tree-view panel empty-state" data-i18n="select_person_open_tree">Select a person to open the tree.</div>
+        </section>
+
+        <section id="view-connections" class="app-view hidden">
+          <div class="panel tree-controls-panel">
+            <div class="panel-title-row">
+              <h2 data-i18n="connections">Connections</h2>
+            </div>
+            <div id="connection-people-list" class="connection-people-list"></div>
+          </div>
+          <div id="connection-view" class="panel empty-state" data-i18n="pick_two_people_connection">Add 2 or more people to find connections.</div>
+        </section>
+
+        <section id="view-settings" class="app-view hidden">
+          <section class="panel">
+            <h2 data-i18n="appearance">Appearance</h2>
+            <label class="inline-control">
+              <span data-i18n="language">Language</span>
+              <select id="pref-language">
+                <option value="es" data-i18n="lang_spanish">Spanish</option>
+                <option value="en" data-i18n="lang_english">English</option>
+              </select>
+            </label>
+            <label class="inline-control">
+              <span data-i18n="theme">Theme</span>
+              <select id="pref-theme">
+                <option value="light" data-i18n="light">Light</option>
+                <option value="dark" data-i18n="dark">Dark</option>
+                <option value="flat" data-i18n="flat">Flat</option>
+                <option value="win95" data-i18n="win95">Windows 95</option>
+                <option value="win311" data-i18n="win311">Windows 3.11</option>
+              </select>
+            </label>
+            <label class="inline-control">
+              <span data-i18n="font_size">Font size</span>
+              <select id="pref-font-size">
+                <option value="14" data-i18n="small">Small</option>
+                <option value="16" data-i18n="normal">Normal</option>
+                <option value="18" data-i18n="large">Large</option>
+                <option value="20" data-i18n="x_large">X-Large</option>
+              </select>
+            </label>
+          </section>
+          <section class="panel settings-panel">
+            <h2 data-i18n="navigation">Navigation</h2>
+            <div class="pref-start-person-block">
+              <label class="inline-control connection-search-control">
+                <span data-i18n="start_person">Start person</span>
+                <input id="pref-start-person-search" type="search" placeholder="Search person by name or ID" data-i18n-placeholder="search_person_by_name_or_id">
+              </label>
+              <div class="pref-start-person-actions">
+                <button id="pref-start-person-clear" class="secondary" type="button" data-i18n="clear">Clear</button>
+              </div>
+              <div id="pref-start-person-current" class="muted technical-id"></div>
+            </div>
+          </section>
+        </section>
+
+        <section id="view-data" class="app-view hidden">
+          <div class="tools-grid">
+            <section class="panel">
+              <div class="panel-title-row">
+                <h2 data-i18n="data_center">Data Center</h2>
+              </div>
+              <nav class="data-subnav">
+                <button class="secondary" type="button" data-data-subsection="data-familysearch" data-i18n="familysearch">FamilySearch</button>
+                <button class="secondary" type="button" data-data-subsection="data-gedcom" data-i18n="gedcom">GEDCOM</button>
+                <button class="secondary" type="button" data-data-subsection="data-backup" data-i18n="backup">Backup</button>
+              </nav>
+            </section>
+            <section id="data-familysearch" class="panel">
+              <div class="panel-title-row">
+                <h2 data-i18n="familysearch">FamilySearch</h2>
+              </div>
+              <div class="tools-grid">
+                <section class="panel">
+                  <div class="panel-title-row">
+                    <h2 data-i18n="familysearch_account">Cuenta FamilySearch</h2>
+                  </div>
+                  <div class="action-row">
+                    <button id="oauth-connect-btn" type="button" data-i18n="connect_familysearch" data-win95-ellipsis="true">Conectar FamilySearch</button>
+                    <button id="oauth-disconnect-btn" class="secondary" type="button" data-i18n="disconnect">Desconectar</button>
+                  </div>
+                  <div id="oauth-status" class="muted"></div>
+                </section>
+                <section class="panel">
+                  <div class="panel-title-row">
+                    <h2 data-i18n="import_from_familysearch">Import from FamilySearch</h2>
+                  </div>
+                  <label class="inline-control">
+                    <span data-i18n="fs_root_person_id">Root person ID</span>
+                    <input id="fs-import-person-id" type="text" placeholder="FamilySearch person ID (e.g. L29R-2Q6)" data-i18n-placeholder="fs_person_id_placeholder">
+                  </label>
+                  <label class="inline-control">
+                    <span data-i18n="generations">Generations</span>
+                    <input id="fs-import-generations" type="number" min="1" max="12" value="4">
+                  </label>
+                  <label class="inline-control">
+                    <span data-i18n="collateral_depth">Profundidad colateral</span>
+                    <input id="fs-import-collateral-depth" type="number" min="0" max="12" value="4">
+                  </label>
+                  <label class="inline-control checkbox">
+                    <input id="fs-import-force" type="checkbox">
+                    <span data-i18n="force_refresh">Force refresh</span>
+                  </label>
+                  <div class="action-row">
+                    <button id="fs-import-btn" type="button" data-i18n="start_import">Start import</button>
+                  </div>
+                  <div id="fs-import-result" class="muted"></div>
+                </section>
+                <section class="panel">
+                  <div class="panel-title-row">
+                    <h2 data-i18n="sync">Sync</h2>
+                  </div>
+                  <label class="inline-control">
+                    <span data-i18n="job_limit">Job limit</span>
+                    <input id="job-limit" type="number" value="100" min="1">
+                  </label>
+                  <label class="inline-control">
+                    <span data-i18n="generations">Generations</span>
+                    <input id="sync-generations" type="number" value="4" min="1" max="12">
+                  </label>
+                  <label class="inline-control">
+                    <span data-i18n="collateral_depth">Profundidad colateral</span>
+                    <input id="sync-collateral-depth" type="number" value="4" min="0" max="12">
+                  </label>
+                  <label class="inline-control checkbox">
+                    <input id="sync-force" type="checkbox">
+                    <span data-i18n="force_refresh">Force refresh</span>
+                  </label>
+                  <div class="action-row">
+                    <button id="start-sync" type="button" data-i18n="start_sync">Start Sync</button>
+                    <button id="stop-sync" class="secondary" type="button" data-i18n="stop_sync">Stop Sync</button>
+                  </div>
+                  <div id="sync-result" class="muted"></div>
+                </section>
+                <section class="panel compact">
+                  <h2 data-i18n="sync_missing_profiles">Sync missing profiles</h2>
+                  <div id="stub-count" class="muted" data-i18n="loading">Loading…</div>
+                  <button id="start-stub-sync" type="button" data-i18n="sync_missing_profiles_action">Sync missing profiles</button>
+                  <div id="stub-sync-result" class="muted"></div>
+                </section>
+              </div>
+            </section>
+            <section id="data-gedcom" class="panel">
+              <div class="panel-title-row">
+                <h2 data-i18n="gedcom">GEDCOM</h2>
+              </div>
+              <div class="tools-grid">
+                <section class="panel compact">
+                  <h2 data-i18n="import_gedcom">Import GEDCOM</h2>
+                  <label class="inline-control">
+                    <span data-i18n="gedcom_root_name">Root person name</span>
+                    <input id="gedcom-root-name" type="text" placeholder="Optional root person full name" data-i18n-placeholder="gedcom_root_name_placeholder">
+                  </label>
+                  <div class="muted technical-id" data-i18n="gedcom_root_name_hint">If provided, this person becomes the default tree root after import.</div>
+                  <div class="import-row">
+                    <label class="import-file-label">
+                      <input id="gedcom-import-file" type="file" accept=".ged,.gedcom">
+                      <span data-i18n="choose_gedcom_file" data-win95-i18n="browse_gedcom_file">Choose GEDCOM file</span>
+                    </label>
+                    <button id="gedcom-import-btn" type="button" data-i18n="import">Import</button>
+                  </div>
+                  <div id="gedcom-import-result" class="muted"></div>
+                </section>
+                <section class="panel compact">
+                  <h2 data-i18n="export_gedcom">Export GEDCOM</h2>
+                  <div class="settings-links">
+                    <a href="/api/export/gedcom" download class="settings-download-link" data-i18n="download_gedcom">↓ Download GEDCOM (.ged)</a>
+                  </div>
+                </section>
+              </div>
+            </section>
+            <section id="data-backup" class="panel">
+              <div class="panel-title-row">
+                <h2 data-i18n="backup">Backup</h2>
+              </div>
+              <div class="settings-links">
+                <a href="/api/backup/db" download class="settings-download-link" data-i18n="download_database">↓ Download database (.sqlite)</a>
+                <a href="/api/backup/full" download class="settings-download-link" data-i18n="download_full_backup">↓ Download full backup (.zip)</a>
+                <a id="backup-7z-link" href="/api/backup/full7z" download class="settings-download-link" data-i18n="download_7z_backup">↓ Download 7z backup</a>
+              </div>
+              <div class="import-row">
+                <label class="import-file-label">
+                  <input id="backup-import-file" type="file" accept=".zip,.7z">
+                  <span data-i18n="choose_backup_file" data-win95-i18n="browse_backup_file">Choose backup file</span>
+                </label>
+                <button id="backup-import-btn" type="button" data-i18n="import_backup">Import backup</button>
+              </div>
+              <div id="backup-import-result" class="muted"></div>
+            </section>
+          </div>
+        </section>
+        <section id="view-book" class="app-view hidden">
+          <section class="panel compact">
+            <h2 data-i18n="generate_book">Generate Book</h2>
+            <label class="inline-control">
+              <span data-i18n="book_root_person">Root person</span>
+              <input id="book-root-search" type="search" placeholder="Search person by name or ID" data-i18n-placeholder="search_person_by_name_or_id">
+            </label>
+            <div id="book-root-current" class="muted"></div>
+            <div id="book-status" class="muted" data-i18n="loading">Loading…</div>
+            <div class="settings-links">
+              <a id="book-markdown-link" href="/api/book/markdown" download class="settings-download-link" data-i18n="download_markdown">↓ Download Markdown</a>
+              <a id="book-pdf-link" href="/api/book/pdf" download class="settings-download-link" data-i18n="download_pdf">↓ Download PDF</a>
+            </div>
+          </section>
+        </section>
+        <section id="view-info" class="app-view hidden">
+          <div class="tools-grid">
+            <section class="panel" id="status-panel">
+              <div class="panel-title-row">
+                <h2 data-i18n="status">Status</h2>
+                <button id="refresh-status" class="secondary" data-i18n="refresh">Refresh</button>
+              </div>
+              <div id="status-content" class="muted" data-i18n="loading">Loading…</div>
+            </section>
+            <section class="panel">
+              <div class="panel-title-row">
+                <h2 data-i18n="sync_history">Sync History</h2>
+              </div>
+              <div id="runs-content" class="runs-list muted" data-i18n="loading">Loading…</div>
+            </section>
+          </div>
+        </section>
+        <section id="view-historical" class="app-view hidden">
+          <section class="panel">
+            <div class="panel-title-row">
+              <h2 data-i18n="historical_events">Eventos históricos</h2>
+              <button id="historical-sync-btn" type="button" data-i18n="historical_sync">Sincronizar desde servicio</button>
+            </div>
+            <div class="tree-controls">
+              <label class="inline-control">
+                <span data-i18n="year_from">Desde</span>
+                <input id="historical-year-from" type="number" value="1900" min="1500" max="2100">
+              </label>
+              <label class="inline-control">
+                <span data-i18n="year_to">Hasta</span>
+                <input id="historical-year-to" type="number" value="2026" min="1500" max="2100">
+              </label>
+              <label class="inline-control">
+                <span data-i18n="place">Lugar</span>
+                <input id="historical-place" type="text" value="Venezuela">
+              </label>
+              <label class="inline-control">
+                <span data-i18n="scope_label">Ámbito</span>
+                <select id="historical-scope-filter">
+                  <option value="" data-i18n="all">Todos</option>
+                  <option value="local" data-i18n="historical_local">Local</option>
+                  <option value="global" data-i18n="historical_global">Global</option>
+                </select>
+              </label>
+            </div>
+            <div id="historical-sync-result" class="muted"></div>
+            <div id="historical-events-list" class="muted" data-i18n="loading">Loading…</div>
+            <div class="people-pager">
+              <button id="historical-prev-page" class="secondary" type="button" data-i18n="previous">Previous</button>
+              <div id="historical-page-info" class="muted"></div>
+              <button id="historical-next-page" class="secondary" type="button" data-i18n="next">Next</button>
+            </div>
+          </section>
+          <section class="panel">
+            <h2 data-i18n="historical_add_event">Guardar evento</h2>
+            <div class="historical-create-grid">
+              <label class="inline-control">
+                <span data-i18n="scope_label">Ámbito</span>
+                <select id="historical-create-scope">
+                  <option value="local" data-i18n="historical_local">Local</option>
+                  <option value="global" data-i18n="historical_global">Global</option>
+                </select>
+              </label>
+              <label class="inline-control">
+                <span data-i18n="historical_event_year">Año</span>
+                <input id="historical-create-year" type="number" value="1958" min="1000" max="2100">
+              </label>
+              <label class="inline-control">
+                <span data-i18n="historical_event_end_year">Año fin</span>
+                <input id="historical-create-end-year" type="number" value="1958" min="1000" max="2100">
+              </label>
+              <label class="inline-control">
+                <span data-i18n="historical_event_title">Título</span>
+                <input id="historical-create-title" type="text" data-i18n-placeholder="historical_event_title_placeholder" placeholder="Evento">
+              </label>
+              <label class="inline-control">
+                <span data-i18n="historical_source_url">URL fuente</span>
+                <input id="historical-create-source-url" type="url" data-i18n-placeholder="historical_source_url_placeholder" placeholder="https://...">
+              </label>
+              <label class="inline-control">
+                <span data-i18n="historical_match_terms">Términos locales</span>
+                <input id="historical-create-terms" type="text" data-i18n-placeholder="historical_match_terms_placeholder" placeholder="venezuela, caracas, falcón">
+              </label>
+              <label class="stack-control">
+                <span data-i18n="historical_event_description">Descripción</span>
+                <textarea id="historical-create-description" rows="2" data-i18n-placeholder="historical_event_description_placeholder" placeholder="Resumen breve"></textarea>
+              </label>
+              <button id="historical-create-btn" class="secondary" type="button" data-i18n="historical_add_event">Guardar evento</button>
+            </div>
+          </section>
+        </section>
+        <section id="view-dedupe" class="app-view hidden">
+          <section class="panel">
+            <div class="panel-title-row">
+              <h2 data-i18n="dedupe_review">Revisión de duplicados</h2>
+              <button id="dedupe-refresh-btn" type="button" data-i18n="refresh_candidates">Actualizar candidatos</button>
+            </div>
+            <div id="dedupe-list" class="muted" data-i18n="loading">Loading…</div>
+            <div class="people-pager">
+              <button id="dedupe-prev-page" class="secondary" type="button" data-i18n="previous">Previous</button>
+              <div id="dedupe-page-info" class="muted"></div>
+              <button id="dedupe-next-page" class="secondary" type="button" data-i18n="next">Next</button>
+            </div>
+          </section>
+        </section>
+      </main>
+      <footer class="app-statusbar" aria-live="polite">
+        <div class="app-statusbar-segment app-statusbar-segment-main">
+          <span class="app-statusbar-label" data-i18n="status">Status</span>
+          <span id="statusbar-summary" class="app-statusbar-value" data-i18n="loading">Loading…</span>
+        </div>
+        <div class="app-statusbar-segment">
+          <span class="app-statusbar-label" data-i18n="people">People</span>
+          <span id="statusbar-people" class="app-statusbar-value">0</span>
+        </div>
+        <div class="app-statusbar-segment">
+          <span class="app-statusbar-label" data-i18n="current_view">Current view</span>
+          <span id="statusbar-view" class="app-statusbar-value">Explorer</span>
+        </div>
+        <div class="app-statusbar-segment">
+          <span class="app-statusbar-label" data-i18n="selected_person">Selected person</span>
+          <span id="statusbar-selection" class="app-statusbar-value">-</span>
+        </div>
+      </footer>
+    </div>
+
+    <div id="bootstrap-gate" class="bootstrap-gate hidden" aria-live="polite" aria-modal="true" role="dialog">
+      <div class="bootstrap-backdrop"></div>
+      <section class="bootstrap-panel">
+        <header class="bootstrap-header">
+          <h2 data-i18n="bootstrap_title">Initial setup</h2>
+          <p id="bootstrap-summary" class="muted" data-i18n="loading">Loading…</p>
+        </header>
+        <div class="bootstrap-grid">
+          <section class="panel bootstrap-card">
+            <h3 data-i18n="bootstrap_db_title">1. Database</h3>
+            <p id="bootstrap-db-status" class="muted" data-i18n="loading">Loading…</p>
+            <div class="action-row">
+              <button id="bootstrap-refresh-btn" class="secondary" type="button" data-i18n="refresh">Refresh</button>
+              <button id="bootstrap-recover-db-btn" class="secondary" type="button" data-i18n="bootstrap_recover_db">Recover from backups</button>
+              <button id="bootstrap-recreate-db-btn" class="secondary" type="button" data-i18n="bootstrap_recreate_db">Recreate database</button>
+            </div>
+          </section>
+
+          <section class="panel bootstrap-card">
+            <h3 data-i18n="bootstrap_oauth_title">2. FamilySearch</h3>
+            <p id="bootstrap-oauth-status" class="muted bootstrap-indicator" data-i18n="loading">Loading…</p>
+            <div class="action-row">
+              <button id="bootstrap-connect-btn" type="button" data-i18n="connect_familysearch">Connect FamilySearch</button>
+            </div>
+          </section>
+
+          <section class="panel bootstrap-card">
+            <h3 data-i18n="bootstrap_import_title">3. Import data</h3>
+            <label class="inline-control">
+              <span data-i18n="fs_root_person_id">Root person ID</span>
+              <input id="bootstrap-person-id" type="text" placeholder="FamilySearch person ID (e.g. L29R-2Q6)" data-i18n-placeholder="fs_person_id_placeholder">
+            </label>
+            <label class="inline-control">
+              <span data-i18n="generations">Generations</span>
+              <input id="bootstrap-generations" type="number" min="1" max="12" value="4">
+            </label>
+            <label class="inline-control">
+              <span data-i18n="collateral_depth">Profundidad colateral</span>
+              <input id="bootstrap-collateral-depth" type="number" min="0" max="12" value="4">
+            </label>
+            <div class="action-row">
+              <button id="bootstrap-import-btn" type="button" data-i18n="start_import">Start import</button>
+              <button id="bootstrap-open-data-btn" class="secondary" type="button" data-i18n="bootstrap_open_data_center">Open Data Center</button>
+              <button id="bootstrap-continue-btn" class="secondary" type="button" data-i18n="bootstrap_continue">Continue without import</button>
+            </div>
+            <div id="bootstrap-import-status" class="muted"></div>
+            <div id="bootstrap-action-result" class="muted"></div>
+          </section>
+        </div>
+      </section>
+    </div>
+
+    <div id="media-modal" class="media-modal hidden" aria-hidden="true">
+      <div class="media-modal-backdrop" data-close-media="true"></div>
+      <div class="media-modal-panel">
+        <button id="media-modal-close" class="secondary media-modal-close" data-i18n="close">Close</button>
+        <div id="media-modal-body" class="media-modal-body"></div>
+      </div>
+    </div>
+
+    <div id="gallery-modal" class="gallery-modal hidden" aria-hidden="true">
+      <div class="gallery-modal-backdrop" data-close-gallery="true"></div>
+      <div class="gallery-modal-panel">
+        <div class="gallery-modal-header">
+          <h3 id="gallery-modal-title" data-i18n="gallery">Gallery</h3>
+          <div class="gallery-header-actions">
+            <a id="gallery-download-all" href="#" class="secondary" data-i18n="download_all">↓ Download all</a>
+            <button id="gallery-modal-close" class="secondary" data-i18n="close">Close</button>
+          </div>
+        </div>
+        <div id="gallery-modal-body" class="gallery-modal-body"></div>
+      </div>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "host": "127.0.0.1",
+  "port": 53682,
+  "db_path": "output/familybook.sqlite",
+  "assets_root": "output/familybook_assets"
+}

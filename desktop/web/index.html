@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Familybook</title>
+    <style>
+      :root { color-scheme: light; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #f4f4f2;
+        color: #222;
+        font: 14px/1.45 "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      }
+      .card {
+        width: min(560px, 92vw);
+        border: 1px solid #d8d8d3;
+        background: #fff;
+        border-radius: 10px;
+        padding: 22px;
+      }
+      h1 { margin: 0 0 8px; font-size: 20px; }
+      p { margin: 8px 0; }
+      .muted { color: #6b6b67; }
+      code {
+        background: #f0f0eb;
+        border: 1px solid #dddcd4;
+        border-radius: 6px;
+        padding: 2px 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Starting Familybook…</h1>
+      <p class="muted" id="status">Connecting to local backend at <code>http://127.0.0.1:53682</code>.</p>
+    </div>
+    <script>
+      const target = "http://127.0.0.1:53682/";
+      const status = document.getElementById("status");
+      let tries = 0;
+      const maxTries = 45;
+
+      async function probe() {
+        tries += 1;
+        try {
+          const r = await fetch("http://127.0.0.1:53682/api/status", { cache: "no-store" });
+          if (r.ok) {
+            window.location.replace(target);
+            return;
+          }
+        } catch (_) {}
+        if (tries >= maxTries) {
+          status.textContent = "Backend is not responding. Close other Familybook instances using port 53682 and relaunch.";
+          return;
+        }
+        status.textContent = `Waiting for local backend (attempt ${tries}/${maxTries})…`;
+        setTimeout(probe, 700);
+      }
+      probe();
+    </script>
+  </body>
+</html>

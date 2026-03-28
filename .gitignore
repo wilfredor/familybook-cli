@@ -4,7 +4,36 @@ __pycache__/
 
 # Environments
 .env
+.env.*
+!.env.example
 .venv/
 
 # OS / tooling
 .DS_Store
+.claude/
+
+# Local runtime / generated data
+output/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.db
+*.log
+
+# Local OAuth cache / credentials
+oauth_token.json
+*.oauth_token.json
+token_cache*.json
+familybook.app.json
+
+# Desktop packaging
+.build/
+desktop/node_modules/
+desktop/src-tauri/target/
+desktop/src-tauri/gen/
+desktop/src-tauri/binaries/familybook-backend-*
+desktop/src-tauri/.cargo/
+familybook_*_native.c
+familybook_*_native.*.so
+familybook_*_native.*.pyd
+

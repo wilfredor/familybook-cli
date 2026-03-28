@@ -1,0 +1,6 @@
+nuitka>=2.3
+rjsmin>=1.2.2
+csscompressor>=0.9.5
+Cython>=3.0
+setuptools>=68
+requests>=2.31
